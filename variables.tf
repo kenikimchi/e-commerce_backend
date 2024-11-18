@@ -14,3 +14,7 @@ variable "cognito_client_name" {
 variable "cognito_client_callback_urls" {
   type = list(string)
 }
+
+variable "user_pool_domain_domain" {
+  type = string
+}

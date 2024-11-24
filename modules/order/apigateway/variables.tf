@@ -1,0 +1,1 @@
+variable "get_cart_integration_uri" {}

@@ -33,7 +33,7 @@ module "dynamodb" {
 }
 
 module "lambda" {
-  source = "./modules/order/lambda"
+  source                          = "./modules/order/lambda"
   lambda_cart_service_bucket_name = var.lambda_cart_service_bucket_name
-  dynamodb_guest_cart_arn = module.dynamodb.guest_cart_table_arn
+  dynamodb_guest_cart_arn         = module.dynamodb.guest_cart_table_arn
 }

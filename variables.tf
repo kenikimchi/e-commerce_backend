@@ -31,3 +31,8 @@ variable "guest_cart_range_key" {
 variable "guest_cart_table_name" {
   type = string
 }
+
+# Lambda
+variable "lambda_cart_service_bucket_name" {
+  type = string
+}

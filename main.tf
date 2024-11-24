@@ -26,5 +26,8 @@ module "cognito" {
 }
 
 module "dynamodb" {
-  source = "./modules/order/dynamodb"
+  source                = "./modules/order/dynamodb"
+  guest_cart_range_key  = var.guest_cart_range_key
+  guest_cart_hash_key   = var.guest_cart_hash_key
+  guest_cart_table_name = var.guest_cart_table_name
 }

@@ -34,6 +34,6 @@ jobs:
               run: |
                 aws lambda update-function-code \
                   --function-name get-cart \
-                  --s3-bucket lambda-cart-service
+                  --s3-bucket lambda-cart-service \
                   --s3-key get-cart.zip
                     

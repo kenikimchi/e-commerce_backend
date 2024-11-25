@@ -3,6 +3,15 @@ resource "aws_s3_bucket" "lambda_cart_service_bucket" {
   bucket = var.lambda_cart_service_bucket_name
 }
 
+resource "aws_s3_bucket_public_access_block" "lambda_cart_service_public_access" {
+  bucket = aws_s3_bucket.lambda_cart_service_bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 resource "aws_s3_bucket_policy" "github_actions_policy" {
   bucket = aws_s3_bucket.lambda_cart_service_bucket.id
 

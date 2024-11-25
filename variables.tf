@@ -40,3 +40,7 @@ variable "lambda_cart_service_bucket_name" {
 variable "get-cart_s3_key" {
   type = string
 }
+
+variable "github_svc" {
+  type = string
+}

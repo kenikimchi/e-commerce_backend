@@ -3,6 +3,32 @@ resource "aws_s3_bucket" "lambda_cart_service_bucket" {
   bucket = var.lambda_cart_service_bucket_name
 }
 
+resource "aws_s3_bucket_policy" "github_actions_policy" {
+  bucket = aws_s3_bucket.lambda_cart_service_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowGitHubActions"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.github_svc
+        }
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.lambda_cart_service_bucket.arn,
+          "${aws_s3_bucket.lambda_cart_service_bucket.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Lambda IAM Role
 resource "aws_iam_role" "lambda_get-cart_assume_role" {
   name = "get-cart_execution_role"

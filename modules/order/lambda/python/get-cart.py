@@ -22,6 +22,7 @@ def lambda_handler(event, context):
         )
         items = response.get('Items', [])
         
+        # Create cart if no cart found
         if not items:
             new_cart = {
                 'cart_id': cart_id,

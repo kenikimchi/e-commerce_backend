@@ -33,7 +33,7 @@ def lambda_handler(event, context):
                 'statusCode': 200,
                 'body': json.dumps({'message': 'New cart created', 'cart': new_cart})
             }
-        # Return cart items 
+        # Return cart items
         return {
             'statusCode': 200,
             'body': json.dumps({'cart_id': cart_id, 'items': items})

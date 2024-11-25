@@ -47,13 +47,13 @@ resource "aws_iam_role_policy_attachment" "lambda_get-cart_policy" {
 # Lambda Function
 resource "aws_lambda_function" "get-cart" {
   function_name = "get-cart"
-  runtime = "python3.9"
-  role = aws_iam_role.lambda_get-cart_assume_role.arn
-  handler = "lambda_function.lambda_handler"
+  runtime       = "python3.9"
+  role          = aws_iam_role.lambda_get-cart_assume_role.arn
+  handler       = "lambda_function.lambda_handler"
 
   s3_bucket = aws_s3_bucket.lambda_cart_service_bucket.id
-  s3_key = var.get-cart_s3_key
+  s3_key    = var.get-cart_s3_key
 
-  timeout = 10
+  timeout     = 10
   memory_size = 128
 }

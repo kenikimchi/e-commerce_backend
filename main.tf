@@ -36,10 +36,10 @@ module "lambda" {
   source                          = "./modules/order/lambda"
   lambda_cart_service_bucket_name = var.lambda_cart_service_bucket_name
   dynamodb_guest_cart_arn         = module.dynamodb.guest_cart_table_arn
-  get-cart_s3_key = var.get-cart_s3_key
+  get-cart_s3_key                 = var.get-cart_s3_key
 }
 
 module "apigateway" {
-  source = "./modules/order/apigateway"
+  source                   = "./modules/order/apigateway"
   get_cart_integration_uri = module.lambda.get-cart_invoke_arn
 }

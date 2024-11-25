@@ -5,7 +5,7 @@ on:
         branches:
             - main
         paths:
-            - modules/order/lambda/python/get-cart,py
+            - modules/order/lambda/python/get-cart.py
 
 jobs:
     deploy:

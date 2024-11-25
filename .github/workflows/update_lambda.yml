@@ -28,7 +28,7 @@ jobs:
             
             - name: Upload to S3
               run: |
-                aws s3 cp get-cart.zip s3://lambda-cart-service/get-cart.zip
+                aws s3 cp ./modules/order/lambda/python/get-cart.zip s3://lambda-cart-service/get-cart.zip
 
             - name: Update lambda function
               run: |

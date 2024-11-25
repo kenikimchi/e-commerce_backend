@@ -36,3 +36,7 @@ variable "guest_cart_table_name" {
 variable "lambda_cart_service_bucket_name" {
   type = string
 }
+
+variable "get-cart_s3_key" {
+  type = string
+}

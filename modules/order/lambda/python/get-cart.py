@@ -5,10 +5,10 @@ from botocore.exceptions import ClientError
 
 # Initialize client
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('shopping_cart')
+table = dynamodb.Table('guest_cart')
 
 def lambda_handler(event, context):
-    cart_id = event.get('queryStringParameters', {}).get('cartId')
+    cart_id = event.get('queryStringParameters', {}).get('cart_id')
 
     if not cart_id:
         return {
@@ -21,9 +21,21 @@ def lambda_handler(event, context):
             keyConditionExpression=boto3.dynamodb.conditions.Key('cart_id').eq(cart_id)
         )
         items = response.get('Items', [])
+        
+        if not items:
+            new_cart = {
+                'cart_id': cart_id,
+                'items': []
+            }
+            table.put_item(Item=new_cart)
+            return {
+                'statusCode': 200,
+                'body': json.dumps({'message': 'New cart created', 'cart': new_cart})
+            }
+
         return {
             'statusCode': 200,
-            'body': json.dumps(items)
+            'body': json.dumps({'cart_id': cart_id, 'items': items})
         }
     
     except ClientError as err:

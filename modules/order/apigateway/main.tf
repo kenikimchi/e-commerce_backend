@@ -22,7 +22,7 @@ resource "aws_apigatewayv2_integration" "get_cart" {
   api_id           = aws_apigatewayv2_api.order.id
   integration_type = "AWS_PROXY"
 
-  integration_method = "GET"
+  integration_method = "POST"
   integration_uri    = var.get_cart_integration_uri
 }
 

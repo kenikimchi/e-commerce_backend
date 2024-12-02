@@ -44,3 +44,20 @@ variable "get-cart_s3_key" {
 variable "github_svc" {
   type = string
 }
+
+# VPC
+variable "main_cidr_block" {
+  type = string
+}
+
+variable "public_subnet_cidrs" {
+  type = list(string)
+}
+
+variable "private_subnet_cidrs" {
+  type = list(string)
+}
+
+variable "project_name" {
+  type = string
+}

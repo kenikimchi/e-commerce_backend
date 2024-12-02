@@ -44,3 +44,11 @@ module "apigateway" {
   source                   = "./modules/order/apigateway"
   get_cart_integration_uri = module.lambda.get-cart_invoke_arn
 }
+
+module "VPC" {
+  source               = "./modules/hosting/vpc"
+  main_cidr_block      = var.main_cidr_block
+  private_subnet_cidrs = var.private_subnet_cidrs
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  project_name         = var.project_name
+}

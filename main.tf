@@ -45,10 +45,18 @@ module "apigateway" {
   get_cart_integration_uri = module.lambda.get-cart_invoke_arn
 }
 
-module "VPC" {
+module "vpc" {
   source               = "./modules/hosting/vpc"
   main_cidr_block      = var.main_cidr_block
   private_subnet_cidrs = var.private_subnet_cidrs
   public_subnet_cidrs  = var.public_subnet_cidrs
   project_name         = var.project_name
 }
+
+# module "nat" {
+#   source               = "./modules/hosting/nat"
+#   private_subnet_ids   = module.vpc.private_subnet_ids
+#   vpc_id               = module.vpc.vpc_id
+#   private_subnet_cidrs = var.private_subnet_cidrs
+#   public_subnet_ids    = module.vpc.public_subnet_ids
+# }

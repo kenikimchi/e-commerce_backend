@@ -69,4 +69,6 @@ module "ecs" {
   asg_max_size = var.asg_max_size
   private_subnet_a_id = module.vpc.private_subnet_a_id
   private_subnet_b_id = module.vpc.private_subnet_b_id
+
+  vpc_id = module.vpc.vpc_id
 }

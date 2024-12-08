@@ -48,7 +48,7 @@ resource "aws_launch_template" "ecs_launch_template" {
   }
 
   user_data = testing #add shell script
-  vpc_security_group_ids = [] # Define security group
+  vpc_security_group_ids = [aws_security_group.client.id]
 }
 
 resource "aws_autoscaling_group" "main" {
@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "main" {
   min_size = var.asg_min_size
   health_check_grace_period = 300
   vpc_zone_identifier = [var.private_subnet_a_id, var.private_subnet_b_id]
-  target_group_arns = [var.target_group_arn]
+  target_group_arns = [var.target_group_arn] #Define
 
   launch_template {
     id = aws_launch_template.ecs_launch_template.id
@@ -127,3 +127,25 @@ resource "aws_cloudwatch_metric_alarm" "scale_down_alarm" {
   alarm_description = "Monitors ec2 cpu utilization <= 15%"
   alarm_actions = [aws_autoscaling_policy.down.arn]
 }
+
+# Security group
+resource "aws_security_group" "client" {
+  name = "${var.project_name}_client_sg"
+  vpc_id = var.vpc_id
+
+  ingress {
+    description = "HTTP access"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    security_groups = [var.alb_sg_id] #Define
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+

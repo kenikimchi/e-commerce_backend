@@ -61,3 +61,16 @@ variable "private_subnet_cidrs" {
 variable "project_name" {
   type = string
 }
+
+# ECS
+variable "instance_type" {
+  type = string
+}
+
+variable "asg_max_size" {
+  type = number
+}
+
+variable "asg_min_size" {
+  type = number
+}

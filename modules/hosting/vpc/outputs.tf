@@ -13,3 +13,11 @@ output "public_subnet_ids" {
 output "vpc_id" {
   value = aws_vpc.main.id
 }
+
+output "private_subnet_a_id" {
+  value = aws_subnet.private_subnet[0].id
+}
+
+output "private_subnet_b_id" {
+  value = aws_subnet.private_subnet[1].id
+}

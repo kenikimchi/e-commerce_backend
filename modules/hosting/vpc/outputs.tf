@@ -15,9 +15,9 @@ output "vpc_id" {
 }
 
 output "private_subnet_a_id" {
-  value = aws_subnet.private_subnet[0].id
+  value = [for subnet in aws_subnet.private_subnet : subnet.id][0]
 }
 
 output "private_subnet_b_id" {
-  value = aws_subnet.private_subnet[1].id
+  value = [for subnet in aws_subnet.private_subnet : subnet.id][1]
 }

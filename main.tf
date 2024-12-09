@@ -53,22 +53,30 @@ module "vpc" {
   project_name         = var.project_name
 }
 
-# module "nat" {
-#   source               = "./modules/hosting/nat"
-#   private_subnet_ids   = module.vpc.private_subnet_ids
-#   vpc_id               = module.vpc.vpc_id
-#   private_subnet_cidrs = var.private_subnet_cidrs
-#   public_subnet_ids    = module.vpc.public_subnet_ids
-# }
+module "nat" {
+  source               = "./modules/hosting/nat"
+  private_subnet_ids   = module.vpc.private_subnet_ids
+  vpc_id               = module.vpc.vpc_id
+  private_subnet_cidrs = var.private_subnet_cidrs
+  public_subnet_ids    = module.vpc.public_subnet_ids
+}
 
 module "ecs" {
-  source = "./modules/hosting/ecs"
-  instance_type = var.instance_type
-  project_name = var.project_name
-  asg_min_size = var.asg_min_size
-  asg_max_size = var.asg_max_size
+  source              = "./modules/hosting/ecs"
+  instance_type       = var.instance_type
+  project_name        = var.project_name
+  asg_min_size        = var.asg_min_size
+  asg_max_size        = var.asg_max_size
   private_subnet_a_id = module.vpc.private_subnet_a_id
   private_subnet_b_id = module.vpc.private_subnet_b_id
+  target_group_arn    = module.alb.target_group_arn
+  vpc_id              = module.vpc.vpc_id
+  alb_sg_id           = module.alb.alb_sg_id
+}
 
-  vpc_id = module.vpc.vpc_id
+module "alb" {
+  source            = "./modules/hosting/alb"
+  vpc_id            = module.vpc.vpc_id
+  project_name      = var.project_name
+  public_subnet_ids = module.vpc.public_subnet_ids
 }

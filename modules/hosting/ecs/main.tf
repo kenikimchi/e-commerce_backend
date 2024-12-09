@@ -39,28 +39,28 @@ resource "aws_iam_instance_profile" "ecs_profile" {
 
 # Create launch template and asg
 resource "aws_launch_template" "ecs_launch_template" {
-  name = "${var.project_name}-lt"
-  image_id = data.aws_ami.ecs_ami.id
+  name          = "${var.project_name}-lt"
+  image_id      = data.aws_ami.ecs_ami.id
   instance_type = var.instance_type
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_profile.name
   }
 
-  user_data = testing #add shell script
+  user_data              = filebase64("./modules/hosting/ecs/config.sh")
   vpc_security_group_ids = [aws_security_group.client.id]
 }
 
 resource "aws_autoscaling_group" "main" {
-  name = "${var.project_name}-asg"
-  max_size = var.asg_max_size
-  min_size = var.asg_min_size
+  name                      = "${var.project_name}-asg"
+  max_size                  = var.asg_max_size
+  min_size                  = var.asg_min_size
   health_check_grace_period = 300
-  vpc_zone_identifier = [var.private_subnet_a_id, var.private_subnet_b_id]
-  target_group_arns = [var.target_group_arn] #Define
+  vpc_zone_identifier       = [var.private_subnet_a_id, var.private_subnet_b_id]
+  target_group_arns         = [var.target_group_arn]
 
   launch_template {
-    id = aws_launch_template.ecs_launch_template.id
+    id      = aws_launch_template.ecs_launch_template.id
     version = aws_launch_template.ecs_launch_template.latest_version
   }
 
@@ -77,74 +77,74 @@ resource "aws_autoscaling_group" "main" {
 
 # Scaling policies
 resource "aws_autoscaling_policy" "up" {
-  name = "${var.project_name}_scale_up_policy"
-  scaling_adjustment = 1
-  adjustment_type = "ChangeInCapacity"
-  cooldown = 300
+  name                   = "${var.project_name}_scale_up_policy"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
   autoscaling_group_name = aws_autoscaling_group.main.name
 }
 
 resource "aws_cloudwatch_metric_alarm" "scale_up_alarm" {
-  alarm_name = "${var.project_name}_asg_scale_up_alarm"
+  alarm_name          = "${var.project_name}_asg_scale_up_alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods = 2
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = 180
-  statistic = "Average"
-  threshold = 80
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 180
+  statistic           = "Average"
+  threshold           = 80
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.main.name
   }
 
   alarm_description = "Monitors ec2 cpu utilization >= 80%"
-  alarm_actions = [aws_autoscaling_policy.up.arn]
+  alarm_actions     = [aws_autoscaling_policy.up.arn]
 }
 
 resource "aws_autoscaling_policy" "down" {
-  name = "${var.project_name}_scale_down_policy"
-  scaling_adjustment = -1
-  adjustment_type = "ChangeInCapacity"
-  cooldown = 300
+  name                   = "${var.project_name}_scale_down_policy"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
   autoscaling_group_name = aws_autoscaling_group.main.name
 }
 
 resource "aws_cloudwatch_metric_alarm" "scale_down_alarm" {
-  alarm_name = "${var.project_name}_asg+scale_down_alarm"
+  alarm_name          = "${var.project_name}_asg+scale_down_alarm"
   comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods = 2
-  metric_name = "CPUUtilization"
-  namespace = "AWS/EC2"
-  period = 180
-  statistic = "Average"
-  threshold = 15
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 180
+  statistic           = "Average"
+  threshold           = 15
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.main.name
   }
 
   alarm_description = "Monitors ec2 cpu utilization <= 15%"
-  alarm_actions = [aws_autoscaling_policy.down.arn]
+  alarm_actions     = [aws_autoscaling_policy.down.arn]
 }
 
 # Security group
 resource "aws_security_group" "client" {
-  name = "${var.project_name}_client_sg"
+  name   = "${var.project_name}_client_sg"
   vpc_id = var.vpc_id
 
   ingress {
-    description = "HTTP access"
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    security_groups = [var.alb_sg_id] #Define
+    description     = "HTTP access"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [var.alb_sg_id]
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = -1
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
